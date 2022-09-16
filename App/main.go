@@ -6,13 +6,12 @@ import (
 )
 
 func main() {
-	tranActionResult := transactions.Add(*new(transactions.Transaction))
+	trans := transactions.Transaction{AccountId: 9}
+	trans.AccountId = 9
 	//tranActionResult := transactions.Delete(1)
-
-	if tranActionResult.IsSuccess() {
-		fmt.Println("done")
-	} else {
-		fmt.Println(tranActionResult.ErrorMessage)
+	if err := transactions.Update2(trans); err != nil {
+		fmt.Printf("error. account id: %v\n", trans.AccountId)
 	}
 
+	fmt.Printf("success. account id: %v\n", trans.AccountId)
 }
