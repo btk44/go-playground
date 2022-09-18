@@ -2,16 +2,13 @@ package main
 
 import (
 	transactions "App/transactions"
-	"fmt"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	trans := transactions.Transaction{AccountId: 9}
-	trans.AccountId = 9
-	//tranActionResult := transactions.Delete(1)
-	if err := transactions.Update2(trans); err != nil {
-		fmt.Printf("error. account id: %v\n", trans.AccountId)
-	}
-
-	fmt.Printf("success. account id: %v\n", trans.AccountId)
+	router := gin.Default()
+	router.GET("/transactions", transactions.GetTransactions)
+	router.GET("/transactions/:id", transactions.GetTransactionById)
+	router.Run("localhost:8080")
 }
