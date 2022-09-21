@@ -1,14 +1,19 @@
 package main
 
 import (
-	transactions "App/transactions"
+	//transactions "App/transactions"
 
-	"github.com/gin-gonic/gin"
+	"App/transactions"
+	"log"
+	"net/http"
+	"os"
 )
 
 func main() {
-	router := gin.Default()
-	router.GET("/transactions", transactions.GetTransactions)
-	router.GET("/transactions/:id", transactions.GetTransactionById)
-	router.Run("localhost:8080")
+	logger := log.New(os.Stdout, "api", log.LstdFlags)
+	transactionHandler := transactions.NewTransactionHandler(logger)
+
+	http.HandleFunc("/", transactionHandler.GetTransactions)
+
+	http.ListenAndServe(":6001", nil)
 }
