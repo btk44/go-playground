@@ -1,6 +1,7 @@
 package transactions
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 )
@@ -18,8 +19,13 @@ func (h *Handler) RegisterEndpoints(sm *http.ServeMux) {
 }
 
 func (h *Handler) GetTransactions(writer http.ResponseWriter, request *http.Request) {
-	log.Println("server called")
-	http.Error(writer, "test", http.StatusBadRequest)
+	result, err := json.Marshal(transactionsData)
+	if err != nil {
+		http.Error(writer, "oops! json issue", http.StatusInternalServerError)
+		return
+	}
+
+	writer.Write(result)
 }
 
 // func GetTransactions(context *gin.Context) {
