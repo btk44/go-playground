@@ -13,6 +13,10 @@ func NewTransactionHandler(logger *log.Logger) *Handler {
 	return &Handler{logger: logger}
 }
 
+func (h *Handler) RegisterEndpoints(sm *http.ServeMux) {
+	sm.HandleFunc("/transactions", h.GetTransactions)
+}
+
 func (h *Handler) GetTransactions(writer http.ResponseWriter, request *http.Request) {
 	log.Println("server called")
 	http.Error(writer, "test", http.StatusBadRequest)
