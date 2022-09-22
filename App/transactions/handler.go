@@ -1,17 +1,17 @@
 package transactions
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
 )
 
 type Handler struct {
-	logger *log.Logger
+	logger     *log.Logger
+	repository *Repository
 }
 
 func NewTransactionHandler(logger *log.Logger) *Handler {
-	return &Handler{logger: logger}
+	return &Handler{logger: logger, repository: &Repository{}}
 }
 
 func (h *Handler) RegisterEndpoints(sm *http.ServeMux) {
@@ -19,33 +19,31 @@ func (h *Handler) RegisterEndpoints(sm *http.ServeMux) {
 }
 
 func (h *Handler) GetTransactions(writer http.ResponseWriter, request *http.Request) {
-	result, err := json.Marshal(transactionsData)
+	h.logger.Panicln("Get transactions")
+	transactions, err := h.repository.getTransactions()
 	if err != nil {
-		http.Error(writer, "oops! json issue", http.StatusInternalServerError)
-		return
+		http.Error(writer, "database error", http.StatusInternalServerError)
 	}
 
-	writer.Write(result)
+	err = transactions.toJson(writer)
+	if err != nil {
+		http.Error(writer, "json encoding error", http.StatusInternalServerError)
+	}
 }
 
-// func GetTransactions(context *gin.Context) {
-// 	context.IndentedJSON(http.StatusOK, transactionsData)
-// }
+func (h *Handler) GetTransactionById(writer http.ResponseWriter, request *http.Request) {
+	h.logger.Panicln("Get one transaction")
 
-// func GetTransactionById(context *gin.Context) {
-// 	id, err := strconv.Atoi(context.Param("id"))
+}
 
-// 	if err != nil {
-// 		context.IndentedJSON(http.StatusBadRequest, gin.H{"message": "Invalid id provided."})
-// 		return
-// 	}
+func (h *Handler) AddTransaction(writer http.ResponseWriter, request *http.Request) {
+	h.logger.Panicln("Add transaction")
 
-// 	for i, trans := range transactionsData {
-// 		if trans.Id == id {
-// 			context.IndentedJSON(http.StatusOK, transactionsData[i])
-// 			return
-// 		}
-// 	}
+	transaction := &Transaction{}
+	err := transaction.fromJson(request.Body)
+	if err != nil {
+		http.Error(writer, "json decoding error", http.StatusBadRequest)
+	}
 
-// 	context.IndentedJSON(http.StatusNotFound, gin.H{"message": "Transactionnot found."})
-// }
+	h.repository.addTransaction(transaction)
+}
