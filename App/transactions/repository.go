@@ -21,12 +21,18 @@ func (r *Repository) getTransaction(id int) *Transaction {
 	// }
 
 	// return transactionsData[transactionIndex]
+	return nil
 }
 
 func (r *Repository) addTransaction(transaction *Transaction) {
 	lastIndex := len(transactionsData) - 1
 	transaction.Id = transactionsData[lastIndex].Id + 1
 	transactionsData = append(transactionsData, transaction)
+}
+
+func (r *Repository) updateTransaction(transaction *Transaction) {
+	//oldTransaction := r.getTransaction(transaction.Id)
+
 }
 
 var transactionsData = Transactions{
