@@ -1,27 +1,25 @@
 package transactions
 
 import (
+	"errors"
 	"time"
 )
 
 type Repository struct {
 }
 
-func (r *Repository) getTransactions() (Transactions, error) {
-	return transactionsData, nil
+func (r *Repository) getTransactions() (*Transactions, error) {
+	return &transactionsData, nil
 }
 
-func (r *Repository) getTransaction(id int) *Transaction {
-	// transactionIndex := Transactions.IndexFunc(transactionsData, func(t *Transaction) bool {
-	// 	return t.Id == id
-	// })
+func (r *Repository) getTransaction(id int) (*Transaction, error) {
+	for _, t := range transactionsData {
+		if t.Id == id {
+			return t, nil
+		}
+	}
 
-	// if transactionIndex == -1 {
-	// 	return nil
-	// }
-
-	// return transactionsData[transactionIndex]
-	return nil
+	return nil, errors.New("transaction not found")
 }
 
 func (r *Repository) addTransaction(transaction *Transaction) {
