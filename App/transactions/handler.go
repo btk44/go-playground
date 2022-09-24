@@ -15,10 +15,18 @@ func NewTransactionHandler(logger *log.Logger) *Handler {
 }
 
 func (h *Handler) RegisterEndpoints(sm *http.ServeMux) {
-	sm.HandleFunc("/transactions", h.GetTransactions)
+	sm.HandleFunc("/transactions", h.handleRequest)
 }
 
-func (h *Handler) GetTransactions(writer http.ResponseWriter, request *http.Request) {
+func (h *Handler) handleRequest(writer http.ResponseWriter, request *http.Request) {
+	if request.Method == http.MethodGet {
+
+		h.getTransactions(writer, request)
+		return
+	}
+}
+
+func (h *Handler) getTransactions(writer http.ResponseWriter, request *http.Request) {
 	h.logger.Panicln("Get transactions")
 	transactions, err := h.repository.getTransactions()
 	if err != nil {
@@ -31,9 +39,8 @@ func (h *Handler) GetTransactions(writer http.ResponseWriter, request *http.Requ
 	}
 }
 
-func (h *Handler) GetTransactionById(writer http.ResponseWriter, request *http.Request) {
+func (h *Handler) getTransactionById(writer http.ResponseWriter, request *http.Request) {
 	h.logger.Panicln("Get one transaction")
-
 }
 
 func (h *Handler) AddTransaction(writer http.ResponseWriter, request *http.Request) {

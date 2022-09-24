@@ -20,8 +20,6 @@ func main() {
 	transactionHandler := transactions.NewTransactionHandler(logger)
 	transactionHandler.RegisterEndpoints(sm)
 
-	//http.ListenAndServe(":6001", sm)
-
 	s := &http.Server{
 		Addr:         ":6002",
 		Handler:      sm,
